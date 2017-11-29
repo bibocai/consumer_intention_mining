@@ -1,3 +1,4 @@
+#test if pull can work better
 class TreeNode(object):
 	def __init__(self,k=None,l=None,r=None):
 		self.key = k
