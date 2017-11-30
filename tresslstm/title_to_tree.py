@@ -95,14 +95,14 @@ def convert(company_name,words,postags,arcs):
 
 if __name__ == "__main__":
 	LTP_DATA_DIR='/data/ltp/ltp-models/3.3.1/ltp_data'
-	
+
 	pos_model_path = os.path.join(LTP_DATA_DIR, 'pos.model')  # 词性标注模型路径，模型名称为`pos.model`
 	cws_model_path = os.path.join(LTP_DATA_DIR,'cws.model')#分词
 	par_model_path = os.path.join(LTP_DATA_DIR,'parser.model')#语法分析
 
 	segmentor=Segmentor()
 	segmentor.load(cws_model_path)
-	
+
 	postagger = Postagger() # 初始化实例
 	postagger.load(pos_model_path)  # 加载模型
 
@@ -110,7 +110,7 @@ if __name__ == "__main__":
 	parser.load(par_model_path)
 
 	entity_name = "手机"
-	sentence = ["专门打电话来问我要不要买手机"]
+	sentence = "专门打电话来问我要不要买手机"
 
 	words = segmentor.segment(sentence)
 	postags = postagger.postag(words)
