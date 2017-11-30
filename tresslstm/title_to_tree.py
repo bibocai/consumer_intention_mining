@@ -1,5 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
+import os
+
+# from pyltp import SentenceSplitter
+from pyltp import Postagger
+from pyltp import Segmentor
+from pyltp import Parser
+
+
 def convert_tree(dep_list, target_idx, target_pos):
 	v = "( " + target_pos + " " + str(target_idx) + " )"
 	for i in range(len(dep_list)):
@@ -85,4 +94,28 @@ def convert(company_name,words,postags,arcs):
 
 
 if __name__ == "__main__":
-	main()
+	LTP_DATA_DIR='/data/ltp/ltp-models/3.3.1/ltp_data'
+	
+	pos_model_path = os.path.join(LTP_DATA_DIR, 'pos.model')  # 词性标注模型路径，模型名称为`pos.model`
+	cws_model_path = os.path.join(LTP_DATA_DIR,'cws.model')#分词
+	par_model_path = os.path.join(LTP_DATA_DIR,'parser.model')#语法分析
+
+	segmentor=Segmentor()
+	segmentor.load(cws_model_path)
+	
+	postagger = Postagger() # 初始化实例
+	postagger.load(pos_model_path)  # 加载模型
+
+	parser=Parser()
+	parser.load(par_model_path)
+
+	entity_name = "手机"
+	sentence = ["专门打电话来问我要不要买手机"]
+
+	words = segmentor.segment(sentence)
+	postags = postagger.postag(words)
+	arcs=parser.parse(words,postags)
+
+	tree=convert(entity_name,words,postags,arcs)
+
+	print tree
