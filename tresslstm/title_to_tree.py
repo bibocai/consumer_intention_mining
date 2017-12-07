@@ -110,16 +110,16 @@ if __name__ == "__main__":
 	parser.load(par_model_path)
 
 	entity_name = "手机"
-	sentence = "专门打电话来问我要不要买手机"
-
-	words = segmentor.segment(sentence)
-	print ' '.join(words)
-	postags = postagger.postag(words)
-	arcs=parser.parse(words,postags)
-
-	tree=convert(entity_name,words,postags,arcs)
-
-	print list(words),tree
+	sentence =[ "专门打电话来问我要不要买手机","最近想买部手机","我想入手一部索尼的手机,主要用于日常拍摄和毕业旅行"]
+	with open('train_seged_sent','w') as writer1:
+		with open('train_s_tree','w') as writer2:
+			for sen in sentence:
+				words = segmentor.segment(sen)
+				postags = postagger.postag(words)
+				arcs=parser.parse(words,postags)
+				tree=convert(entity_name,words,postags,arcs)
+				writer1.write('1'+' '+' '.join(words)+'\n')
+				writer2.write(tree+'\n')
 
 	segmentor.release()
 	postagger.release()
