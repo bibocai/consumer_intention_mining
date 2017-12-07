@@ -4,14 +4,14 @@
 from treelstm_with_pytorch import TreeLstmCell
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
-import torch.autograd as autograd
+#import torch.nn.functional as F
+#import torch.optim as optim
+from  torch.autograd import Variable
+import numpy as np
+input_size = 10
+hidden_size =10
 
-INPUT_SIZE = 100
-HIDDEN_SIZE =200 
-VOCAL_SIZE =
-embedding_dic={}
+embedding_dic={'专门':[1,1,1,1,1,1,1,1,1,1]}
 class TreeNode(object):
     def __init__(self,k=None,l=None,r=None):
         self.key = k
@@ -51,36 +51,38 @@ def show_tree(s_tree,_iter_for_dispaly):
     show_tree(s_tree.right,_iter_for_dispaly)
     return
 
-Class TreeLstm(nn.Module):
+class TreeLstm(nn.Module):
     def __init__(self,input_size,hidden_size):
         super(TreeLstm,self).__init__()
-        self.Cell=TreeLstmCell(INPUT_SIZE,HIDDEN_SIZE)
-        
+        self.Cell=TreeLstmCell(input_size,hidden_size)
+
     def forward(self,sentence,root):
+        self.sentence=sentence
         h,c=self.create_graph(root)
         return h
-    def create_graph(self,sentence,root):
+    def create_graph(self,root):
         if root.key.isdigit():
-            if sentence[int(root.key)] in embedding_dic:
-                input = np.array(embedding_dic[sentence[int(root.key)]])
+            if self.sentence[int(root.key)] in embedding_dic:
+                input = np.array(embedding_dic[self.sentence[int(root.key)]]).astype(np.float32)
             else:
-                input = np.random.randn(input_size)
+                input = np.random.randn(input_size).astype(np.float32)
             hlx = Variable(torch.zeros(hidden_size))
             clx = Variable(torch.zeros(hidden_size))
             hrx = Variable(torch.zeros(hidden_size))
             crx = Variable(torch.zeros(hidden_size))
             input = Variable(torch.from_numpy(input))
-            return nt.Cell(input,hlx,clx,hrx,crx)
-        hlx,clx = create_graph(root.left)
-        hrx,crx = create_graph(root.right)
-        input = Variale(np.zeros(input_size))
-        return nt.Cell(input,hlx,clx,hrx,crx)
+            return self.Cell(input,hlx,clx,hrx,crx)
+        hlx,clx = self.create_graph(root.left)
+        hrx,crx = self.create_graph(root.right)
+        input = Variable(torch.zeros(input_size))
+        return self.Cell(input,hlx,clx,hrx,crx)
 
 if __name__ == '__main__':
-    s = "( ATT ( ni 0 ) ( SBV ( ATT ( ATT ( v 1 ) ( n 2 ) ) ( ATT ( n 3 ) ( COO ( LAD ( c 5 ) ( n 6 ) ) ( n 4 ) ) ) ) ( ADV ( POB ( ATT ( d 8 ) ( ATT ( v 9 ) ( n 10 ) ) ) ( d 7 ) ) ( VOB ( n 14 ) ( RAD ( u 13 ) ( VOB ( n 12 ) ( v 11 ) ) ) ) ) ) )"
+   # s = "( ATT ( ni 0 ) ( SBV ( ATT ( ATT ( v 1 ) ( n 2 ) ) ( ATT ( n 3 ) ( COO ( LAD ( c 5 ) ( n 6 ) ) ( n 4 ) ) ) ) ( ADV ( POB ( ATT ( d 8 ) ( ATT ( v 9 ) ( n 10 ) ) ) ( d 7 ) ) ( VOB ( n 14 ) ( RAD ( u 13 ) ( VOB ( n 12 ) ( v 11 ) ) ) ) ) ) )"
+    s='( VOB ( n 9 ) ( VOB ( SBV ( r 4 ) ( ADV ( v 5 ) ( ADV ( ADV ( d 6 ) ( v 7 ) ) ( v 8 ) ) ) ) ( COO ( ADV ( v 2 ) ( v 3 ) ) ( ADV ( d 0 ) ( v 1 ) ) ) ) )'
     s_tree = create_tree(s)
     show_tree(s_tree,0)
 
-    ctree = create_tree(s_tree) 
     model=TreeLstm(10,10)
-    h=model('',ctree)       
+    h=model(['专门','打电话', '来', '问', '我', '要', '不','要' ,'买', '手机'],s_tree)
+    print h

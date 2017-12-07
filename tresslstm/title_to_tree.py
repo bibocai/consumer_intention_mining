@@ -104,7 +104,7 @@ if __name__ == "__main__":
 	segmentor.load(cws_model_path)
 
 	postagger = Postagger() # 初始化实例
-	postagger.load(pos_model_path)  # 加载模型
+	postagger.load(pos_model_path)	# 加载模型
 
 	parser=Parser()
 	parser.load(par_model_path)
@@ -113,9 +113,14 @@ if __name__ == "__main__":
 	sentence = "专门打电话来问我要不要买手机"
 
 	words = segmentor.segment(sentence)
+	print ' '.join(words)
 	postags = postagger.postag(words)
 	arcs=parser.parse(words,postags)
 
 	tree=convert(entity_name,words,postags,arcs)
 
-	print tree
+	print list(words),tree
+
+	segmentor.release()
+	postagger.release()
+	parser.release()
