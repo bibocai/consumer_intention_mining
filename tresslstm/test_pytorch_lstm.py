@@ -56,8 +56,9 @@ class TreeLstm(nn.Module):
         super(TreeLstm,self).__init__()
         self.Cell=TreeLstmCell(input_size,hidden_size)
 
-    def forward(self,sentence,root):
+    def forward(self,sentence,s_tree):
         self.sentence=sentence
+        root = create_tree(s_tree)
         h,c=self.create_graph(root)
         return h
     def create_graph(self,root):
