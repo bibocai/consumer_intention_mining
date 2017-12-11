@@ -8,10 +8,11 @@ import torch.nn as nn
 #import torch.optim as optim
 from  torch.autograd import Variable
 import numpy as np
-input_size = 10
-hidden_size =10
+from create_wordvec import create_wordvec
+input_size = 100
+hidden_size =200
 
-embedding_dic={'专门':[1,1,1,1,1,1,1,1,1,1]}
+embedding_dic=create_wordvec()
 class TreeNode(object):
     def __init__(self,k=None,l=None,r=None):
         self.key = k
@@ -58,6 +59,8 @@ class TreeLstm(nn.Module):
 
     def forward(self,sentence,s_tree):
         self.sentence=sentence
+        print ' '.join(self.sentence)
+        print s_tree
         root = create_tree(s_tree)
         h,c=self.create_graph(root)
         return h

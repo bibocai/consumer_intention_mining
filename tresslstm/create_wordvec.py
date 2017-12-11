@@ -1,12 +1,20 @@
 def create_wordvec():
 	word = {}
-	fr = open('title_word_vector','r')
-	for line in fr.readlines():
-		l = line.strip().split('\t')
-		w = l[0].strip()
-		vec = l[1].strip().split(' ')
-		word[w] = [float(v) for v in vec]
-	fr.close()
+	with open('/users2/yqian/embedding/embedding_weibo.data','r') as reader:
+		jump_first_line=1
+		for line in reader:
+
+			if jump_first_line==1:
+				jump_first_line=-1
+				continue
+
+			l = line.strip().split(' ')
+
+			w = l[0].strip()
+			vec = l[1:]
+			word[w] = [float(v) for v in vec]
+
+
 	return word
 
 if __name__ == '__main__':

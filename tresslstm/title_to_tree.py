@@ -110,16 +110,36 @@ if __name__ == "__main__":
 	parser.load(par_model_path)
 
 	entity_name = "手机"
-	sentence =[ "专门打电话来问我要不要买手机","最近想买部手机","我想入手一部索尼的手机,主要用于日常拍摄和毕业旅行"]
-	with open('train_seged_sent','w') as writer1:
-		with open('train_s_tree','w') as writer2:
-			for sen in sentence:
-				words = segmentor.segment(sen)
-				postags = postagger.postag(words)
-				arcs=parser.parse(words,postags)
-				tree=convert(entity_name,words,postags,arcs)
-				writer1.write('1'+' '+' '.join(words)+'\n')
-				writer2.write(tree+'\n')
+	#sentence =[ "专门打电话来问我要不要买手机","最近想买部手机","我想入手一部索尼的手机,主要用于日常拍摄和毕业旅行"]
+	sentence=[]
+	#mode_list=['val','test','train']
+	mode_list=['val','test','train']
+	trigger_words=['手机','苹果','iphone','品牌','水果','小米','三星','索尼','中兴','i5','海尔','诺基亚','联想','安卓','htc','oppo','魅族','黑莓','华为','罗永浩','vivo','锤子','nokia','sony','海信','华硕','康佳','s4','note3','apple','galaxy','i6','huawei','s3','lumia','samsung','酷派','tcl','长虹','i4','note2','4s','酷睿','比亚迪','blackberry','创维','meizu']
+	for mode in mode_list:
+		with open('/users4/bbcai/data/phone/phone_'+mode,'r') as reader:
+			for line in reader:
+				sentence.append(line)
+		with open('./phone_tree/phone_seged_sent_'+mode,'w') as writer1:
+				with open('./phone_tree/phone_s_tree_'+mode,'w') as writer2:
+					for line in sentence:
+						#words = segmentor.segment(sen)
+						label= line.strip().split()[0]
+						words = line.strip().split()[1:]
+						tag=-1
+						for tri in trigger_words:
+							if tri in words:
+								entity_name=tri
+								tag=1
+								break
+						if tag==-1:
+							continue#跳过句子里面没有手机的触发词语的情况
+						writer1.write(label+' '+' '.join(words)+'\n')
+						postags = postagger.postag(words)
+
+						arcs=parser.parse(words,postags)
+                        ####################确定entity_name####################需要做实验
+						tree=convert(entity_name,words,postags,arcs)
+						writer2.write(tree+'\n')
 
 	segmentor.release()
 	postagger.release()
