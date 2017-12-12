@@ -11,30 +11,31 @@ batch_size=128
 if __name__ == '__main__':
 
     model = TreeLstm(input_size,hidden_size)
+    model.load_state_dict(torch.load("./train_status.pkl"))
     criterion = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.01,momentum=0.9)
     trainer = Trainer(model,criterion,optimizer,batch_size)
     train_dataset = genDataset('./phone_tree/phone_seged_sent_val','./phone_tree/phone_s_tree_val')
     val_dataset = genDataset('./phone_tree/phone_seged_sent_val','./phone_tree/phone_s_tree_val')
-    #train_dataset = genDataset('./train_seged_sent','./train_s_tree')
-    #val_dataset  = genDataset('./train_seged_sent','./train_s_tree')
+#    train_dataset = genDataset('./train_seged_sent','./train_s_tree')
+#    val_dataset  = genDataset('./train_seged_sent','./train_s_tree')
 
     since=time.time()
     best_acc=0.0
     best_model_wts = model.state_dict()
 
-    for epoch in range(3):
-        train_loss             = trainer.train(train_dataset)
-        train_loss, train_accu = trainer.test(train_dataset)
-        val_loss ,val_accu    = trainer.test(val_dataset)
+    for epoch in range(20):
+         train_loss             = trainer.train(train_dataset)
+        #train_loss, train_accu = trainer.test(train_dataset)
         # test_loss, test_pred   = trainer.test(test_dataset)
 
-        print('---------------train---------------')
-        print('Loss: {:.4f} Acc: {:.4f}'.format(
-                train_loss, train_accu))
+        #print('---------------train---------------')
+        #print('TrainLoss: {:.4f} ValAcc: {:.4f}'.format(
+        #        train_loss, train_accu))
         print('--------------val------------------')
-        print('Loss: {:.4f} Acc: {:.4f}'.format(
-                val_loss, val_accu))
+        val_loss ,val_accu    = trainer.test(val_dataset)
+        print('ValLoss: {:.4f} ValAcc: {:.4f}'.format(
+               val_loss, val_accu))
 
             # deep copy the model
         if val_accu > best_acc:

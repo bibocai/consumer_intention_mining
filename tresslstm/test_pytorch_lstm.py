@@ -11,7 +11,7 @@ import numpy as np
 from create_wordvec import create_wordvec
 input_size = 100
 hidden_size =200
-
+label_size=2
 embedding_dic=create_wordvec()
 class TreeNode(object):
     def __init__(self,k=None,l=None,r=None):
@@ -56,14 +56,15 @@ class TreeLstm(nn.Module):
     def __init__(self,input_size,hidden_size):
         super(TreeLstm,self).__init__()
         self.Cell=TreeLstmCell(input_size,hidden_size)
-
+        self.fc1=nn.Linear(hidden_size,label_size)
     def forward(self,sentence,s_tree):
         self.sentence=sentence
-        print ' '.join(self.sentence)
-        print s_tree
+        #print ' '.join(self.sentence)
+        #print s_tree
         root = create_tree(s_tree)
         h,c=self.create_graph(root)
-        return h
+        pred=self.fc1(h)
+        return pred
     def create_graph(self,root):
         if root.key.isdigit():
             if self.sentence[int(root.key)] in embedding_dic:

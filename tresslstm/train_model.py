@@ -80,13 +80,15 @@ class Trainer(object):
             loss = self.criterion(output.view(1,-1), label)
             total_loss += loss.data[0]
             output = output.data.view(1,-1).cpu()
+
             # predictions[idx] = torch.dot(indices, torch.exp(output))
             _ , pred = torch.max(output,1)
 
-            correct += (label.data.cpu() == pred )
+            correct += torch.sum((label.data.cpu() == pred ))
             predictions[idx]=pred[0]
 #           type(correct):torch.ByteTensor of size 1
-        return total_loss / len(dataset), float(correct[0])/len(dataset)
+        print correct
+        return total_loss / len(dataset), float(correct)/len(dataset)
 
 if __name__ == '__main__':
     train_dataset = genDataset('./train_seged_sent','./train_s_tree')
