@@ -111,11 +111,12 @@ if __name__ == "__main__":
 
 	entity_name = "手机"
 	#sentence =[ "专门打电话来问我要不要买手机","最近想买部手机","我想入手一部索尼的手机,主要用于日常拍摄和毕业旅行"]
-	sentence=[]
+
 	#mode_list=['val','test','train']
 	mode_list=['val','test','train']
 	trigger_words=['手机','苹果','iphone','品牌','水果','小米','三星','索尼','中兴','i5','海尔','诺基亚','联想','安卓','htc','oppo','魅族','黑莓','华为','罗永浩','vivo','锤子','nokia','sony','海信','华硕','康佳','s4','note3','apple','galaxy','i6','huawei','s3','lumia','samsung','酷派','tcl','长虹','i4','note2','4s','酷睿','比亚迪','blackberry','创维','meizu']
 	for mode in mode_list:
+		sentence=[]
 		with open('/users4/bbcai/data/phone/phone_'+mode,'r') as reader:
 			for line in reader:
 				sentence.append(line)
