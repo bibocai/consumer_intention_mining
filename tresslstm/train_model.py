@@ -38,6 +38,8 @@ class Trainer(object):
         self.use_cuda= 0
     # helper function for training
     #一个dataset
+    def trans_train(self,dataset):
+
     def train(self, dataset):
         self.model.train()
         self.optimizer.zero_grad()
