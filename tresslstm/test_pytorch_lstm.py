@@ -53,10 +53,11 @@ def show_tree(s_tree,_iter_for_dispaly):
     return
 
 class TreeLstm(nn.Module):
-    def __init__(self,input_size,hidden_size):
+    def __init__(self,input_size,hidden_size,trans=False):
         super(TreeLstm,self).__init__()
         self.Cell=TreeLstmCell(input_size,hidden_size)
         self.fc1=nn.Linear(hidden_size,label_size)
+        self.trans=trans
     def forward(self,sentence,s_tree):
         self.sentence=sentence
         #print ' '.join(self.sentence)
@@ -64,6 +65,8 @@ class TreeLstm(nn.Module):
         root = create_tree(s_tree)
         h,c=self.create_graph(root)
         pred=self.fc1(h)
+        if self.trans:
+            return h,pred
         return pred
     def create_graph(self,root):
         if root.key.isdigit():
